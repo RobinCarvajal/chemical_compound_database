@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Database Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 50%; /* Adjusted width to use 50% of the screen */
+            margin: 0 auto; /* This centers the container horizontally */
+        }
+        table {
+            width: 100%; /* Ensure table takes full width of its container */
+            border-collapse: collapse; /* Collapse border spacing */
+        }
+        th, td {
+            padding: 8px; /* Add padding to cells */
+            text-align: left; /* Align text to the left */
+            border: 1px solid #ddd; /* Add border to cells */
+        }
+        th {
+            background-color: #f2f2f2; /* Add background color to header cells */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <center>
+            <h1>DRUG DATABASE Documentation</h1>
+        </center>
+    </div>
+
+    <div class="container">
+        <h2>Methods</h2>
+        <div>
+            <h3>Modularity</h3>
+            <p>The program is built modularly for both the back and front end.</p>
+            <h3>Data extraction and parsing</h3>
+            <p>Data from the .sdf file of bioactive compounds was extracted using RDKit OSS in Python. The file contained a hundred compounds, some with predefined properties and others computed by RDKit. Data extraction was done via a custom generator class (Objects.SDFLoader), which created Molecule data class (Objects.Molecule) objects. These attributes were stored in lists for database insertion.</p>
+            <h3>Database Management</h3>
+            <p>The DatabaseManager module sets up an SQLite database ("drug_database.db"). The database will always be created at this location and is erased when the program closes. It handles data insertion and querying using Python's SQLite3 package.</p>
+            <h3>Images generation</h3>
+            <p>Images of the molecules were obtained using the rdkit.Chem.Draw, transformed into bytes using io.BytesIO, and stored in the database as BLOB. Later, they were decoded and used in the GUI.</p>
+            <h3>Fused Aromatic Rings Count</h3>
+            <p>The count_fused_aromatic_rings function uses RDKit to identify fused aromatic rings in a molecule by analyzing its smallest set of smallest rings (SSSR). It checks for aromaticity and detects fused rings by examining shared atoms. The count is determined from the unique fused ring indices.</p>
+            <h3>Filtering criteria</h3>
+            <p>The database consistently retrieves uniform information, accessing all data from the main table with each query. However, filtering occurs upon data retrieval within the program, utilizing functions aligned with widely recognized criteria such as Lipinski's rules, lead-likeness, and bioavailability. This approach ensures that only relevant data is processed and displayed in the GUI.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <table>
+            <tr>
+                <th>Property</th>
+                <th>Lipinski’s</th>
+                <th>Lead-likeness</th>
+                <th>Bioavailability</th>
+            </tr>
+            <tr>
+                <td>Molecular Weight</td>
+                <td>≤ 500</td>
+                <td>≤ 450</td>
+                <td>≤ 500</td>
+            </tr>
+            <tr>
+                <td>LogD</td>
+                <td>-</td>
+                <td>-4 ≤ x ≤ 4</td>
+                <td>≤5</td>
+            </tr>
+            <tr>
+                <td>Number of Hydrogen-bond Donors</td>
+                <td>≤5</td>
+                <td>≤5</td>
+                <td>≤5</td>
+            </tr>
+            <tr>
+                <td>Number of Hydrogen-bond Acceptors</td>
+                <td>≤ 10</td>
+                <td>≤8</td>
+                <td>≤ 10</td>
+            </tr>
+            <tr>
+                <td>LogP</td>
+                <td>≤5</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Ring Count</td>
+                <td>-</td>
+                <td>≤4</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Fused Aromatic Rings Count</td>
+                <td>-</td>
+                <td>-</td>
+                <td>≤5</td>
+            </tr>
+            <tr>
+                <td>Polar Surface Area</td>
+                <td>-</td>
+                <td>-</td>
+                <td>≤ 200</td>
+            </tr>
+            <tr>
+                <td>Rotatable Bonds Count</td>
+                <td>-</td>
+                <td>≤ 10</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Lipinski’s</td>
+                <td>≤ 10</td>
+                <td>-</td>
+                <td>≤ 10</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="container">
+        <h3>Front-End Design</h3>
+        <p>The application's front-end, built with <em>Tkinter</em>, employs a modular structure with distinct classes for various GUI elements. <strong>MenuBar</strong> manages the menu, <strong>Tabs</strong> handles tab navigation, and <strong>Visualiser</strong> houses <strong>DataTable</strong> for database visualisation. <strong>DataTable</strong> decodes byte data into images using <code>Image</code> and <code>ImageTK</code>. <strong>App</strong> merges these components for a cohesive interface, enhancing code organisation and usability. Each class has methods that enable data visualisation and interaction with other classes when running the GUI.</p>
+        <h3>Starting GUI</h3>
+        <p>The GUI program is triggered by executing the <code>main.py</code> script in the command line in this fashion: <code>python3 main.py</code> in the <em>DRUG_DATABASE</em> directory.</p>
+
+        <h2>How to use the GUI</h2>
+        <p>The database loading process starts with selecting an SDF file through the File menu's OpenSDF option, prompting the user to navigate directories and choose the file. Subsequently, the program initiates background processing to create the database, which is confirmed by a pop-up upon successful creation. Exiting the application is also accessible via the File menu.</p>
+        <p>Initially, the database appears in the visualiser frame, which can be navigated through horizontal and vertical scroll bars, presenting unfiltered and unsorted data. The Sort tab streamlines database management with Filter, Sort by, Order, and a Search box. Filters include Lipinski’s rule, Lead-likeness, and Bioavailability parameters. Sorting by numerical values is facilitated by "Sort by", applicable only to numerical columns, while "Order" permits ascending or descending arrangement. The “Search” box targets the molecule column.</p>
+        <p>The Export tab facilitates exporting the current table in CSV or XLS format, initiating a directory selection window upon activation. Additionally, the Help menu accesses local HTML documentation within the DRUG_DATABASE directory, offering guidance without internet dependency. The database is deleted upon program closure to mitigate storage issues and ensure future database creation without data conflicts.</p>
+    </div> <!-- Closing container for Front-End Design section -->
+
+</body>
+</html>
+
+

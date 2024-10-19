@@ -1,0 +1,9 @@
+# Necessary packages
+
+pandas 
+rdkit
+XlsxWriter
+sqlite3
+Tkinter
+PIL
+webbrowser
