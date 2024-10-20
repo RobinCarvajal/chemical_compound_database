@@ -1,5 +1,6 @@
 # chemical_compound_database
 
+This shows the code of a graphical user interphase to explore and visualise a chemical compounds database. Build using base python and tkinter.
 ## Methods
 
 ### Modularity
